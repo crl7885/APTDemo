@@ -6,11 +6,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Created by chairuilong on 2017/8/31.
+ * Created by chairuilong on 2017/9/5.
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
-public @interface DaggerPreferences {
+public @interface SPClass {
 
     String value() default "default";
 
