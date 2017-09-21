@@ -7,7 +7,6 @@ import com.crl.aptmanager.APTManager;
 /**
  * Created by chairuilong on 2017/9/8.
  */
-
 public class MyApp extends Application {
 
     @Override
