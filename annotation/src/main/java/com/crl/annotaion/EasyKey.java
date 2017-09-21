@@ -11,24 +11,12 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.CLASS)
-public @interface SPField {
+public @interface EasyKey {
 
-    String key() default "0x00000000";
+    String value() default "0x00000000";
 
     boolean commit() default true;
 
     boolean apply() default false;
 
-
-    String defaultString() default "";
-
-    int defaultInt() default 0;
-
-    long defaultLong() default 0l;
-
-    float defaultFloat() default 0f;
-
-    double defaultDoutble() default 0;
-
-    boolean defaultBoolean() default false;
 }

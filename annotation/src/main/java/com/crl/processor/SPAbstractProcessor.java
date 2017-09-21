@@ -1,14 +1,13 @@
 package com.crl.processor;
 
-import com.crl.annotaion.SPClass;
-import com.crl.annotaion.SPField;
+import com.crl.annotaion.EasyPreference;
+import com.crl.annotaion.EasyKey;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 
 import java.io.IOException;
-import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -40,7 +39,7 @@ public class SPAbstractProcessor extends AbstractProcessor {
     @Override
     public Set<String> getSupportedAnnotationTypes() {
         Set<String> set = new LinkedHashSet<>();
-        set.add(SPClass.class.getCanonicalName());
+        set.add(EasyPreference.class.getCanonicalName());
 
         return set;
     }
@@ -77,16 +76,16 @@ public class SPAbstractProcessor extends AbstractProcessor {
 
     private List<JavaFile> getJavaFiles(Set<? extends TypeElement> set, RoundEnvironment env) {
         List<JavaFile> files = new ArrayList<>();
-        for (Element element : env.getElementsAnnotatedWith(SPClass.class)) {
+        for (Element element : env.getElementsAnnotatedWith(EasyPreference.class)) {
             TypeElement typeElement = (TypeElement) element;
-            SPClass annotation = element.getAnnotation(SPClass.class);
+            EasyPreference annotation = element.getAnnotation(EasyPreference.class);
 
             String packageName = getPackage(typeElement).getQualifiedName().toString();
             String className = typeElement.getQualifiedName().toString().substring(
                     packageName.length() + 1).replace('.', '$');
             ClassName fromName = ClassName.get(packageName, className);
 
-            BindingSet bindingSet = new BindingSet(TypeName.get(typeElement.asType()),
+            TypeSet bindingSet = new TypeSet(TypeName.get(typeElement.asType()),
                     fromName, annotation.value());
 
             List<FieldSet> fieldSets = parserField(typeElement);
@@ -99,21 +98,19 @@ public class SPAbstractProcessor extends AbstractProcessor {
         return files;
     }
 
-    private List<FieldSet> parserField(TypeElement typeElement ){
+    private List<FieldSet> parserField(TypeElement typeElement) {
         List<? extends Element> members = elementUtils.getAllMembers(typeElement);
         List<FieldSet> fieldSets = new ArrayList<>();
-        for(Element element : members){
-            SPField field = element.getAnnotation(SPField.class);
-            if(field == null){
+        for (Element element : members) {
+            EasyKey field = element.getAnnotation(EasyKey.class);
+            if (field == null) {
                 continue;
             }
+
             TypeName typeName = TypeName.get(element.asType());
             String name = element.getSimpleName().toString();
-            FieldSet set = new FieldSet(typeName,name,field.key()
-                    ,field.commit(),field.apply(),field.defaultString()
-                    ,field.defaultInt(),field.defaultLong()
-                    ,field.defaultFloat(),field.defaultDoutble()
-                    ,field.defaultBoolean());
+            FieldSet set = new FieldSet(typeName, name, field.value()
+                    , field.commit(), field.apply());
             fieldSets.add(set);
         }
         return fieldSets;

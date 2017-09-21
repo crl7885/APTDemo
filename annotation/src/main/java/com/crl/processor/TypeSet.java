@@ -8,7 +8,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +17,7 @@ import javax.lang.model.element.Modifier;
  * Created by chairuilong on 2017/9/7.
  */
 
-public class BindingSet {
+public class TypeSet {
 
     private final TypeName typeName;
     private final ClassName fromClassName;
@@ -29,7 +28,7 @@ public class BindingSet {
     private final String instances = "mInstances";
     private List<FieldSet> fiedlSets = new ArrayList<>();
 
-    public BindingSet(TypeName typeName, ClassName fromClassName, String value) {
+    public TypeSet(TypeName typeName, ClassName fromClassName, String value) {
         this.typeName = typeName;
         this.fromClassName = fromClassName;
         this.value = value;
@@ -50,7 +49,8 @@ public class BindingSet {
 
 
         TypeSpec.Builder result = TypeSpec.classBuilder(className)
-                .addModifiers(Modifier.PUBLIC);
+                .addModifiers(Modifier.PUBLIC,Modifier.FINAL)
+                .superclass(typeName);
 
 
         result.addField(createSPField());
@@ -120,12 +120,14 @@ public class BindingSet {
 
         CodeBlock.Builder builder = CodeBlock.builder();
         String codeFormat = "return $L.$L($S,$L);";
+        /*
         if (fieldSet.getTypeName().equals(ClassName.get(String.class))) {
             codeFormat = "return $L.$L($S,$S);";
         }
+        */
         builder.add(codeFormat,
                 memberSpName, Utils.getFieldMethodName(fieldSet.getTypeName(), true)
-                , fieldSet.getKey(), Utils.getDefaultValue(fieldSet));
+                , fieldSet.getKey(), fieldSet.getName());
 
         MethodSpec.Builder builderMethod = MethodSpec.methodBuilder("get" + Utils.toUpperCase4Index(fieldSet.getName()))
                 .returns(getTypeName(fieldSet.getTypeName()))
@@ -148,40 +150,40 @@ public class BindingSet {
 
     }
 
-    private MethodSpec createSetField(FieldSet fieldSet){
+    private MethodSpec createSetField(FieldSet fieldSet) {
 
-        ClassName edit = ClassName.get("android.content","SharedPreferences.Editor");
+        ClassName edit = ClassName.get("android.content", "SharedPreferences.Editor");
 
         CodeBlock.Builder builder = CodeBlock.builder()
-        .add("$T edit = $L.edit();\n",edit,memberSpName)
+                .add("$T edit = $L.edit();\n", edit, memberSpName)
                 .add("edit.$L($S,$L);\n"
-                        , Utils.getFieldMethodName(fieldSet.getTypeName(),false)
-                        ,fieldSet.getKey()
-                        ,fieldSet.getName())
-                .add("edit.$L;\n",getEditMethod(fieldSet));
+                        , Utils.getFieldMethodName(fieldSet.getTypeName(), false)
+                        , fieldSet.getKey()
+                        , fieldSet.getName())
+                .add("edit.$L;\n", getEditMethod(fieldSet));
 
-        MethodSpec.Builder builderMethod = MethodSpec.methodBuilder("set"+Utils.toUpperCase4Index(fieldSet.getName()))
+        MethodSpec.Builder builderMethod = MethodSpec.methodBuilder("set" + Utils.toUpperCase4Index(fieldSet.getName()))
                 .returns(void.class)
                 .addModifiers(Modifier.PUBLIC)
-                .addParameter(getTypeName(fieldSet.getTypeName()),fieldSet.getName())
+                .addParameter(getTypeName(fieldSet.getTypeName()), fieldSet.getName())
                 .addCode(builder.build());
         return builderMethod.build();
     }
 
-    private String getEditMethod(FieldSet fieldSet){
-        if(fieldSet.isApply()){
+    private String getEditMethod(FieldSet fieldSet) {
+        if (!fieldSet.isApply()) {
             return "commit()";
-        }else{
+        } else {
             return "apply()";
         }
     }
 
-    private MethodSpec createClear(){
+    private MethodSpec createClear() {
 
-        ClassName edit = ClassName.get("android.content","SharedPreferences.Editor");
+        ClassName edit = ClassName.get("android.content", "SharedPreferences.Editor");
 
         CodeBlock.Builder builder = CodeBlock.builder()
-                .add("$T edit = $L.edit();\n",edit,memberSpName)
+                .add("$T edit = $L.edit();\n", edit, memberSpName)
                 .add("edit.clear();\n")
                 .add("edit.commit();\n");
 

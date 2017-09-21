@@ -53,6 +53,7 @@ public class Utils {
     public static Object getDefaultValue(FieldSet set){
         String modName = "";
         TypeName type = set.getTypeName();
+        /*
         if (type.equals(TypeName.BOOLEAN)) {
             return set.isDefaultBoolean();
         } else if (type.equals(TypeName.INT)) {
@@ -66,11 +67,11 @@ public class Utils {
         } else if (type.equals(TypeName.get(String.class))) {
             return set.getDefaultString();
         }
+        */
         return modName;
     }
 
     /**
-     * 首字母大写
      *
      * @param string
      * @return
@@ -81,7 +82,6 @@ public class Utils {
         return String.valueOf(methodName);
     }
     /**
-     * 字符转成大写
      *
      * @param chars
      * @return

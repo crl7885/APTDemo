@@ -1,22 +1,22 @@
 package com.crl.aptdemo;
 
 
-import com.crl.annotaion.SPClass;
-import com.crl.annotaion.SPField;
+import com.crl.annotaion.EasyKey;
+import com.crl.annotaion.EasyPreference;
 
 /**
  * Created by chairuilong on 2017/8/31.
  */
 
-@SPClass("test")//设置SharedPreferences 要保存的filename
+@EasyPreference("test")//设置SharedPreferences 要保存的filename
 public class User {
 
-    @SPField(key = "name", defaultString = "test_name")
-    public String name;
+    @EasyKey("name")
+    public String name = "testName";
 
-    @SPField(key = "age", defaultInt = 100)
-    public int age;
+    @EasyKey("age")
+    public int age = 100;
 
-    @SPField(key = "isVip", defaultBoolean = true)
-    public boolean isVip;
+    @EasyKey("isVip")
+    public boolean isVip = true;
 }
