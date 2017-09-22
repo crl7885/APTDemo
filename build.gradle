@@ -17,4 +17,3 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-group='com.crl.apt-manager'
