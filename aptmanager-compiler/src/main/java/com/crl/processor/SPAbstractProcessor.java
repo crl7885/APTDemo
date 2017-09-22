@@ -1,7 +1,7 @@
 package com.crl.processor;
 
-import com.crl.annotaion.EasyPreference;
 import com.crl.annotaion.EasyKey;
+import com.crl.annotaion.EasyPreference;
 import com.google.auto.service.AutoService;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.JavaFile;

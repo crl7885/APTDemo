@@ -11,8 +11,8 @@ import com.crl.annotaion.EasyPreference;
 @EasyPreference("test")//设置SharedPreferences 要保存的filename
 public class User {
 
-    @EasyKey("name")
-    public String name = "testName";
+    @EasyKey("name")//要保存key的值
+    public String name = "testName";//默认值
 
     @EasyKey("age")
     public int age = 100;
